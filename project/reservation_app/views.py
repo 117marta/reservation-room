@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Room
+from .models import Room, RoomReservation
+import datetime
 
 
 # Dodaj salę konferencyjną
@@ -75,5 +76,32 @@ class ModifyRoomView(View):
         room.capacity = capacity
         room.projector_availability = projector
         room.save()
+        return redirect('room-list')
+
+
+# Rezerwacja sali konferencyjnej
+class ReservationRoomView(View):
+
+    def get(self, request, room_id):
+        room = Room.objects.get(pk=room_id)
+        return render(request, 'reservation_app/reservation_room.html', context={'room': room})
+
+    def post(self, request, room_id):
+        room = Room.objects.get(pk=room_id)
+        date = request.POST.get('reservation-date')
+        comment = request.POST.get('comment')
+
+        # Czy sala nie jest już zarezerwowana
+        if RoomReservation.objects.filter(room_id=room, date=date):
+            ctx = {'room': room, 'error': 'Sala jest już zarezerwowana!'}
+            return render(request, 'reservation_app/reservation_room.html', context=ctx)
+
+        # Czy użytkownik nie wprowadził daty z przeszłości
+        if date < str(datetime.date.today()):
+            ctx = {'room': room, 'error': 'Nie możesz rezerwować wstecz!'}
+            return render(request, 'reservation_app/reservation_room.html', context=ctx)
+
+        # Zapisanie nowej rezerwacji do bazy
+        RoomReservation.objects.create(room_id=room, date=date)
         return redirect('room-list')
 

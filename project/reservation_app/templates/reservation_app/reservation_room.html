@@ -1,0 +1,33 @@
+{% extends 'reservation_app/base.html' %}
+{% block content %}
+
+<div class="form">
+    <h2>Nazwa sali: {{ room.name }}</h2>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="reservation-date">Data rezerwacji</label>
+            <input type="date" name="reservation-date" id="reservation-date" min="2022-01-01" max="2222-12-31">
+        </div>
+        <div class="form-group">
+            <label for="comment">Komentarz do rezerwacji</label>
+            <textarea name="comment" id="comment"></textarea>
+        </div>
+        <button type="submit" value="Rezerwuj">Zarezerwuj salę</button>
+    </form>
+</div>
+
+
+<!-- Form error -->
+{% if error %}
+<div class="form-error">
+    {{error}}
+<!--    <button type="button">&times;</button>-->
+<!--    <button type="button">&#x2717;</button>-->
+    <button type="button">&#x274C;</button>
+</div>
+{% endif %}
+<!-- Form error -->
+
+
+{% endblock %}
