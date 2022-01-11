@@ -7,6 +7,9 @@ class Room(models.Model):
     capacity = models.PositiveIntegerField()
     projector_availability = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.name
+
 
 # Rezerwacji sali konferencyjnej
 class RoomReservation(models.Model):

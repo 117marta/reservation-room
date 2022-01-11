@@ -1,0 +1,42 @@
+{% extends 'reservation_app/base.html' %}
+{% block content %}
+
+
+<h2>Nazwa sali: {{ room.name }}</h2>
+<h3>Pojemność sali: {{ room.capacity }}</h3>
+<h3>Dostępność rzutnika:
+    {% if room.projector_availability %} &#9745;
+    {% else %} &#9746;
+    {% endif %}
+</h3>
+
+
+<h3>Rezerwacje sali:</h3>
+    <ul>
+        {% for r in reservations %}
+        <li>
+            Data: {{ r.date }}<br>
+            Komentarz: {{ r.comment }}<br><br>
+            {% endfor %}
+        </li>
+    </ul>
+
+
+<a href="/room/modify/{{ room.pk }}">Modyfikuj salę</a>
+<a href="/room/delete/{{ room.pk }}">Usuń salę</a>
+<a href="/room/reserve/{{ room.pk }}">Rezerwuj salę</a>
+
+
+<!-- Form error -->
+{% if error %}
+<div class="form-error">
+    {{error}}
+<!--    <button type="button">&times;</button>-->
+<!--    <button type="button">&#x2717;</button>-->
+    <button type="button">&#x274C;</button>
+</div>
+{% endif %}
+<!-- Form error -->
+
+
+{% endblock %}

@@ -33,7 +33,7 @@ class AddRoomView(View):
 class RoomListView(View):
 
     def get(self, request):
-        rooms = Room.objects.all()
+        rooms = Room.objects.all().order_by('name')
         return render(request, 'reservation_app/room_list.html', context={'rooms': rooms})
 
 
@@ -102,6 +102,14 @@ class ReservationRoomView(View):
             return render(request, 'reservation_app/reservation_room.html', context=ctx)
 
         # Zapisanie nowej rezerwacji do bazy
-        RoomReservation.objects.create(room_id=room, date=date)
+        RoomReservation.objects.create(room_id=room, date=date, comment=comment)
         return redirect('room-list')
 
+
+# Szczegółowy widok sali
+class RoomDetailsView(View):
+    def get(self, request, room_id):
+        room = Room.objects.get(pk=room_id)
+        # Wszystkie terminy rezerwacji (z obiektu naszej sali) posortowane od najstarszej
+        reservations = room.roomreservation_set.filter(date__gte=str(datetime.date.today())).order_by('date')
+        return render(request, 'reservation_app/room_details.html', context={'room': room, 'reservations': reservations})
