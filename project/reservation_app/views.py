@@ -3,6 +3,7 @@ from django.views import View
 from .models import Room
 
 
+# Dodaj salę konferencyjną
 class AddRoomView(View):
 
     def get(self, request):
@@ -27,12 +28,17 @@ class AddRoomView(View):
         return redirect('room-list')
 
 
+# Wyświetl listę wszystkich sal
 class RoomListView(View):
 
     def get(self, request):
         rooms = Room.objects.all()
         return render(request, 'reservation_app/room_list.html', context={'rooms': rooms})
 
-    # def post(self, request):
-    #     pass
 
+# Usunięcie sali konferencyjnej z bazy
+class DeleteRoomView(View):
+    def get(self, request, room_id):
+        room = Room.objects.get(pk=room_id)
+        room.delete()
+        return redirect('/room_list/')
