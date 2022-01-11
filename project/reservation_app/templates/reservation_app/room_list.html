@@ -9,12 +9,13 @@
             <th>Nazwa</th>
             <th>Pojemność</th>
             <th>Dostępność rzutnika</th>
+            <th>Dostępność sali</th>
         </tr>
     </thead>
     <tbody>
         {% for r in rooms %}
             <tr>
-                <th>{{ r.pk }}</th>
+                <th>{{ forloop.counter }}</th>
                 <td><a href="/room/{{ r.pk }}/">{{ r.name }}</a></td>
                 <td>{{ r.capacity }}</td>
                 <td>
@@ -22,6 +23,11 @@
                         &#9745;
                     {% else %}
                         &#9746;
+                    {% endif %}
+                </td>
+                <td>
+                    {% if r.reserved %} Zarezerwowana
+                    {% else %} Dostępna
                     {% endif %}
                 </td>
                 <td><a href="/room/modify/{{ r.pk }}/">edytuj</a></td>

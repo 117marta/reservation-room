@@ -4,7 +4,7 @@ from .models import Room, RoomReservation
 import datetime
 
 
-# Dodaj salę konferencyjną
+# Dodanie sali konferencyjnej
 class AddRoomView(View):
 
     def get(self, request):
@@ -29,11 +29,14 @@ class AddRoomView(View):
         return redirect('room-list')
 
 
-# Wyświetl listę wszystkich sal
+# Wyświetlenie listy wszystkich sal
 class RoomListView(View):
 
     def get(self, request):
         rooms = Room.objects.all().order_by('name')
+        for room in rooms:  # iteracja po wszystkich salach
+            reservation_dates = [reservation.date for reservation in room.roomreservation_set.all()]  # dla każdej sali, wyciągnięcie listy dat, w których sala jest dostępna
+            room.reserved = datetime.date.today() in reservation_dates  # czy dzisiaj sala jest dostępna. Dodajemy tę informację do obieku sali (możliwość skorzystania z tego atrybutu w szablonie)
         return render(request, 'reservation_app/room_list.html', context={'rooms': rooms})
 
 
@@ -84,21 +87,23 @@ class ReservationRoomView(View):
 
     def get(self, request, room_id):
         room = Room.objects.get(pk=room_id)
-        return render(request, 'reservation_app/reservation_room.html', context={'room': room})
+        reservations = room.roomreservation_set.filter(date__gte=str(datetime.date.today())).order_by('date')  # przyszłe rezerwacje
+        return render(request, 'reservation_app/reservation_room.html', context={'room': room, 'reservations': reservations})
 
     def post(self, request, room_id):
         room = Room.objects.get(pk=room_id)
         date = request.POST.get('reservation-date')
         comment = request.POST.get('comment')
+        reservations = room.roomreservation_set.filter(date__gte=str(datetime.date.today())).order_by('date')  # przyszłe rezerwacje
 
         # Czy sala nie jest już zarezerwowana
         if RoomReservation.objects.filter(room_id=room, date=date):
-            ctx = {'room': room, 'error': 'Sala jest już zarezerwowana!'}
+            ctx = {'room': room, 'error': 'Sala jest już zarezerwowana!', 'reservations': reservations}
             return render(request, 'reservation_app/reservation_room.html', context=ctx)
 
         # Czy użytkownik nie wprowadził daty z przeszłości
         if date < str(datetime.date.today()):
-            ctx = {'room': room, 'error': 'Nie możesz rezerwować wstecz!'}
+            ctx = {'room': room, 'error': 'Nie możesz rezerwować wstecz!', 'reservations': reservations}
             return render(request, 'reservation_app/reservation_room.html', context=ctx)
 
         # Zapisanie nowej rezerwacji do bazy

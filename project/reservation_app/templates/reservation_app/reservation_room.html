@@ -1,6 +1,7 @@
 {% extends 'reservation_app/base.html' %}
 {% block content %}
 
+
 <div class="form">
     <h2>Nazwa sali: {{ room.name }}</h2>
     <form action="" method="post">
@@ -28,6 +29,17 @@
 </div>
 {% endif %}
 <!-- Form error -->
+
+
+<h3>Rezerwacje sali:</h3>
+    <ul>
+        {% for r in reservations %}
+        <li>
+            Data: {{ r.date }}<br>
+            Komentarz: {{ r.comment }}<br><br>
+            {% endfor %}
+        </li>
+    </ul>
 
 
 {% endblock %}
