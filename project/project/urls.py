@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
+from reservation_app.views import AddRoomView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/', TemplateView.as_view(template_name='reservation_app/base.html')),
+    path('room/view/', AddRoomView.as_view(), name='add-room')
 ]
