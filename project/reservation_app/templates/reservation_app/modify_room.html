@@ -1,0 +1,37 @@
+{% extends 'reservation_app/base.html' %}
+{% block content %}
+
+
+<div class="form">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="room-name">Nazwa sali</label>
+            <input type="text" name="room-name" id="room-name", value="{{ room.name }}">
+        </div>
+        <div class="form-group">
+            <label for="capacity">Pojemność sali</label>
+            <input type="number" step="1" name="capacity" id="capacity", value="{{ room.capacity }}">
+        </div>
+        <div class="form-check">
+            <label for="projector">Dostępność rzutnika</label>
+            <input type="checkbox" name="projector" id="projector" {% if room.projector_availability %} checked {% endif %}>
+        </div>
+        <button type="submit" value="Dodaj">Edytuj salę</button>
+    </form>
+</div>
+
+
+<!-- Form error -->
+{% if error %}
+<div class="form-error">
+    {{error}}
+<!--    <button type="button">&times;</button>-->
+<!--    <button type="button">&#x2717;</button>-->
+    <button type="button">&#x274C;</button>
+</div>
+{% endif %}
+<!-- Form error -->
+
+
+{% endblock %}
