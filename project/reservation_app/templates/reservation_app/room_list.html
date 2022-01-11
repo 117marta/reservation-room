@@ -1,0 +1,44 @@
+{% extends 'reservation_app/base.html' %}
+{% block content %}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nazwa</th>
+            <th>Pojemność</th>
+            <th>Dostępność rzutnika</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in rooms %}
+            <tr>
+                <th>{{ r.pk }}</th>
+                <td><a href="/room/{{ r.pk }}/">{{ r.name }}</a></td>
+                <td>{{ r.capacity }}</td>
+                <td>
+                    {% if r.projector_availability %}
+                        &#9745;
+                    {% else %}
+                        &#9746;
+                    {% endif %}
+                </td>
+                <td><a href="/room/modify/{{ r.pk }}/">edytuj</a></td>
+                <td><a href="/room/delete/{{ r.pk }}/">usuń</a></td>
+                <td><a href="/room/reserve/{{ r.pk }}">rezerwuj</a></td>
+            </tr>
+        {% empty %}
+            <td>Brak dostępnych sal</td>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+<!-- Form error -->
+
+<!-- Form error -->
+
+
+{% endblock %}
