@@ -118,3 +118,26 @@ class RoomDetailsView(View):
         # Wszystkie terminy rezerwacji (z obiektu naszej sali) posortowane od najstarszej
         reservations = room.roomreservation_set.filter(date__gte=str(datetime.date.today())).order_by('date')
         return render(request, 'reservation_app/room_details.html', context={'room': room, 'reservations': reservations})
+
+
+# Wyszukiwarka
+class SearchView(View):
+    def get(self, request):
+        rooms = Room.objects.all()
+        name = request.GET.get('room-name')
+        capacity = request.GET.get('capacity')
+        capacity = int(capacity) if capacity else 0
+        projector = request.GET.get('projector') == 'on'
+
+        if name:
+            rooms = rooms.filter(name__icontains=name)
+        if capacity:
+            rooms = rooms.filter(capacity__gte=capacity)
+        if projector:
+            rooms = rooms.filter(projector_availability=projector)
+
+        for room in rooms:
+            reservation_dates = [reservation.date for reservation in room.roomreservation_set.all()]
+            room.reserved = str(datetime.date.today()) in reservation_dates
+
+        return render(request, 'reservation_app/room_list.html', context={'rooms': rooms, 'date': datetime.date.today()})

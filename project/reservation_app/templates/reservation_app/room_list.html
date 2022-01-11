@@ -42,9 +42,24 @@
 
 
 
-<!-- Form error -->
+<!-- Search -->
+<br><br>
+<h3>Wyszukaj</h3>
+<form action="/search/" method="get">
+    {% csrf_token %}
+    <label for="room-name">Nazwa sali</label>
+    <input type="text" name="room-name" id="room-name" placeholder="Nazwa sali">
+    <br>
+    <label for="capacity">Minimalna pojemność sali</label>
+    <input type="number" step="1" name="capacity" id="capacity" placeholder="5">
+    <br>
+    <label for="projector">Dostępność rzutnika</label>
+    <input type="checkbox" name="projector" id="projector">
+    <br>
+    <button type="submit">Szukaj</button>
+</form>
 
-<!-- Form error -->
+<!-- Search -->
 
 
 {% endblock %}
